@@ -1,0 +1,39 @@
+
+
+services:
+  user_service:
+    build:
+      context: ./user_service
+      dockerfile: Dockerfile
+    ports:
+      - "8091:8080"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/user_db
+    networks:
+      - microservices_network
+    depends_on:
+      - mongo
+
+  order_service:
+    build:
+      context: ./order_service
+      dockerfile: Dockerfile
+    ports:
+      - "8092:8080"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/order_db
+    networks:
+      - microservices_network
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - microservices_network
+
+networks:
+  microservices_network:
+    driver: bridge
